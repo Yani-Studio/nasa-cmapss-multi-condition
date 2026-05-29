@@ -32,9 +32,12 @@ All deep learning model training and time-series ensemble operations for this pi
 * **Logic:** `CNN-BiLSTM-Attention` + `Dual Transformer Encoder`
 * **Meaning:** We simultaneously extract local patterns (CNN-BiLSTM) and global correlations (Transformer) to precisely parse minute inflection points occurring during engine degradation.
 
-### Phase 3: Geometric Blending Ensemble
-* **Logic:** Geometric Averaging (FN Risk Suppression)
-* **Meaning:** By applying geometric averaging instead of simple arithmetic mean, we force the model to ensure that outliers from specific sub-models do not contaminate the overall prediction.
+### Phase 3: Heterogeneous Ensemble Strategies
+* **Logic:**
+    * **FD002 (Geometric Ensemble):** Geometric Averaging for FN Risk Suppression.
+    * **FD004 (Soft-Min Ensemble):** Soft-Min Weighting for Risk-Aware Scaling.
+* **Meaning:** * **FD002:** By applying geometric averaging, we ensure that outliers from specific sub-models do not contaminate the overall prediction, effectively suppressing False Negatives.
+    * **FD004:** We utilize the Soft-Min function to assign higher weights to lower predicted RUL values (i.e., identifying earlier failure warnings), effectively prioritizing critical risk detection in complex, noisy environments.
 
 ### Phase 4: Operational Boundary Fine-Tuning
 * **Logic:** Business-driven Thresholding (Failure < 30, Alert < 45)
@@ -51,7 +54,7 @@ All deep learning model training and time-series ensemble operations for this pi
 | :--- | :--- | :--- |
 | **CNN-BiLSTM-Attention** | ![FD002 BiLSTM](./FD002/Visualization/CNN-BILSTM-ATT%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 BiLSTM](./FD004/Visualization/CNN-BILSTM-ATT%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) |
 | **Dual Transformer** | ![FD002 Transformer](./FD002/Visualization/DUAL%20TRANSFORMER%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Transformer](./FD004/Visualization/DUAL%20TRANSFORMER%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) |
-| **Geometric Ensemble** | ![FD002 Ensemble](./FD002/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Ensemble](./FD004/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test)%20.png) |
+| **Ensemble (Geo/Soft-Min)** | ![FD002 Ensemble](./FD002/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Ensemble](./FD004/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test)%20.png) |
 
 ### 3.2. Diagnostic Reliability (Residuals & Regression)
 > **Chart Explanation:** Residual distribution forming a tight Gaussian band around 0 indicates high prediction accuracy. The closer the data points in the scatter plot are to the $y=x$ line, the stronger the regression performance (RUL precision) of the model.
@@ -61,8 +64,6 @@ All deep learning model training and time-series ensemble operations for this pi
 | **Residuals Distribution** | ![FD002 Res](./FD002/Visualization/Residuals%20(Error)%20Distribution%20Comparison.png) | ![FD004 Res](./FD004/Visualization/Residuals%20(Error)%20Distribution%20Comparison.png) |
 | **Prediction Trend** | ![FD002 Trend](./FD002/Visualization/RUL%20Prediction%20Trend%20(Sorted%20by%20True%20RUL).png) | ![FD004 Trend](./FD004/Visualization/RUL%20Prediction%20Trend%20(Sorted%20by%20True%20RUL).png) |
 | **Scatter Analysis** | ![FD002 Scatter](./FD002/Visualization/True%20RUL%20vs%20Predicted%20RUL%20Scatter%20Plot.png) | ![FD004 Scatter](./FD004/Visualization/True%20RUL%20vs%20Predicted%20RUL%20Scatter%20Plot.png) |
-
----
 
 ## 🤖 4. Integration: Voiceflow Report Builder
 
