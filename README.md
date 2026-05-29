@@ -65,7 +65,43 @@
 ---
 
 ## 🤖 4. Integration: Voiceflow Report Builder
-> **Integration Note:** 본 파이프라인의 최종 진단 결과는 **Voiceflow(보이스플로우)** 챗봇 대화창과 연동됩니다. 모델이 생성한 실시간 정비 의사결정 차트 및 리포트는 이미지 형태로 즉각 시각화되어 현장 정비사에게 전달됩니다.
+
+> **Concept:** 본 시스템은 예측 엔진(MacBook M5 환경)과 현장 접점(Voiceflow 챗봇)을 API로 연결하여, 딥러닝 모델의 복잡한 추론 결과를 즉각적인 **정비 의사결정 리포트**로 변환합니다.
+
+
+
+### 4.1. Data-to-Insight Workflow
+본 파이프라인은 정비사가 별도의 데이터 해석 없이 즉각적인 액션을 취할 수 있도록 다음과 같은 자동화 워크플로우를 거칩니다.
+
+1.  **Inference Execution:** 학습된 `CombinedModel`이 엔진 센서 데이터를 입력받아 RUL(Remaining Useful Life)과 고장 확률을 실시간으로 추론합니다.
+2.  **Automated Visualization:** 추론 결과물(회귀 분석 결과 및 잔차 분포 차트)을 시각화 엔진이 자동으로 렌더링하여 고유 ID를 가진 이미지 파일로 저장합니다.
+3.  **Webhook Trigger:** 생성된 이미지 경로와 정비 권고안(Maintenance Action Plan)을 포함한 JSON 페이로드를 Voiceflow API로 전송합니다.
+4.  **Field Delivery:** 현장 정비사는 모바일 챗봇 창에서 즉시 차트를 확인하고, 즉각적인 정비 수행 여부를 결정합니다.
+
+### 4.2. Delivery Payload Structure
+시스템 간의 데이터 통신은 효율성을 위해 다음과 같은 JSON 페이로드 구조를 사용합니다.
+
+```json
+{
+  "engine_id": "FD002_005",
+  "prediction_timestamp": "2026-05-29T20:44:00Z",
+  "ruling_score": 28.5,
+  "status": "ALERT_CRITICAL",
+  "chart_url": "[https://storage.server/assets/plots/FD002_005_report.png](https://storage.server/assets/plots/FD002_005_report.png)",
+  "recommendation": "Engine overhaul required within 30 cycles."
+}
+
+## 4.3. Strategic Impact
+* **Latency Reduction:** 데이터 분석부터 정비 권고까지의 시간을 수 분 단위로 단축합니다.
+* **Interpretation Support:** 전문적인 모델의 복잡한 지표를 '정비 가이드' 형태로 단순화하여 비전문가도 현장에서 직관적인 판단이 가능합니다.
+* **Continuous Feedback:** 현장 정비 결과 데이터를 다시 모델의 피드백 루프로 활용하여, 향후 오탐지율(False Positive)을 지속적으로 튜닝할 수 있는 기반을 마련합니다.
+
+---
+
+## 📚 References
+* **Dataset:** [NASA C-MAPSS Data Repository](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
+* **CNN-BiLSTM-Attention:** [Attention-based CNN-BiLSTM for SOH and RUL estimation](https://doi.org/10.1177/17483026221130598)
+* **Transformer-based:** [A Dual-Scale Transformer-Based Remaining Useful Life Prediction Model](https://irep.ntu.ac.uk/id/eprint/51147/1/1877636_Mumtaz.pdf)
 
 ---
 
