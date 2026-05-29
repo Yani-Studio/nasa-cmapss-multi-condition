@@ -81,13 +81,12 @@
 ### 4.2. Delivery Payload Structure
 시스템 간의 데이터 통신은 효율성을 위해 다음과 같은 JSON 페이로드 구조를 사용합니다.
 
-```json
 {
   "engine_id": "FD002_005",
   "prediction_timestamp": "2026-05-29T20:44:00Z",
   "ruling_score": 28.5,
   "status": "ALERT_CRITICAL",
-  "chart_url": "[https://storage.server/assets/plots/FD002_005_report.png](https://storage.server/assets/plots/FD002_005_report.png)",
+  "chart_url": "https://storage.server/assets/plots/FD002_005_report.png",
   "recommendation": "Engine overhaul required within 30 cycles."
 }
 
