@@ -3,13 +3,18 @@
 > **Hybrid Deep Learning Pipeline for C-MAPSS FD002 & FD004 Data Streams**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Hardware: Apple M5](https://img.shields.io/badge/Hardware-Apple_M5_24GB-black.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
 ---
 
+## 🖥️ Computational Environment
+본 파이프라인의 모든 딥러닝 모델 학습 및 시계열 앙상블 연산은 **Apple MacBook Pro (M5 Base Chipset, 24GB Unified Memory)** 환경에서 최적화되었습니다. M5의 고효율 연산 아키텍처를 활용하여, 복합 노이즈가 포함된 항공 엔진 센서 데이터를 실시간 수준으로 처리합니다.
+
+---
+
 ## 📊 1. Performance Benchmark: NASA Penalty Score
-> **Engineering Insight:** 파이프라인의 성과를 먼저 제시합니다. NASA C-MAPSS 데이터셋에서 단일 모델 대비 앙상블 기법이 얼마나 비대칭적 손실(Penalty)을 물리적으로 억제했는지 시각적으로 확증합니다.
+> **Metric Explanation:** NASA C-MAPSS에서 가장 중요한 지표입니다. 단순히 오차(MSE)를 줄이는 것을 넘어, **'고장인데 정상으로 판단(Late Prediction)'**하는 경우 지수함수적 페널티가 부과됩니다. 본 앙상블 모델은 이 우측 꼬리(Heavy-Tail) 오차를 물리적으로 진압하여 페널티 스코어를 극적으로 개선했습니다.
 
 | FD002 - Penalty Score (78.4% ↓) | FD004 - Penalty Score (89.2% ↓) |
 | :---: | :---: |
@@ -17,41 +22,39 @@
 
 ---
 
-## 🛠️ 2. Core Workflow (Notebook Pipeline)
+## 🛠️ 2. Core Workflow & Logic (Notebook Pipeline)
 
 ### Phase 1: Signal Pre-processing & Normalization
-> **Engineering Insight:** 주피터 노트북의 첫 번째 섹션입니다. 고도와 운전 모드가 혼재된 원시 센서 데이터는 전역 정규화 시 기저가 왜곡됩니다. 칼만 필터로 노이즈를 제거한 뒤, 6개 운전 조건별로 인스턴스를 군집화하여 독립적으로 스케일링하는 과정을 수행했습니다.
-
-* **Key Logic:** Kalman Filter Smoothing + Regime-Clustered Min-Max Scaling
+* **Logic:** Kalman Filter Smoothing + Regime-Clustered Min-Max Scaling
+* **Meaning:** 6개 운전 모드(Regime)별 데이터의 기저를 맞춰, 단순 전역 정규화 시 발생하는 신호 왜곡을 방지했습니다.
 
 ### Phase 2: Heterogeneous Architecture Feature Extraction
-> **Engineering Insight:** 노트북의 모델링 파트입니다. 서로 다른 수학적 계통인 CNN-BiLSTM(국소 패턴 집중)과 Dual Transformer(전역 상관관계 파악)를 병렬 배치하여, 시계열 데이터의 변곡점을 다각도에서 포착하도록 설계했습니다.
-
-* **Key Logic:** `CNN-BiLSTM-Attention` + `Dual Transformer Encoder`
+* **Logic:** `CNN-BiLSTM-Attention` + `Dual Transformer Encoder`
+* **Meaning:** 국소 패턴(CNN-BiLSTM)과 전역 상관관계(Transformer)를 동시에 추출하여, 엔진 열화 시 발생하는 미세한 변곡점을 정밀하게 파싱합니다.
 
 ### Phase 3: Geometric Blending Ensemble
-> **Engineering Insight:** 앙상블 섹션입니다. 단순 산술평균은 특정 모델의 오차 폭발(아웃라이어)에 취약합니다. 이를 기하평균 기반 블렌딩으로 처리하여 오차 분포의 우측 꼬리(Heavy-Tail)를 강제로 억제했습니다.
-
-* **Key Logic:** Geometric Averaging to suppress False Negative (FN) Risks
+* **Logic:** Geometric Averaging (FN Risk Suppression)
+* **Meaning:** 일반 산술평균 대신 기하평균을 적용해 특정 모델의 아웃라이어가 전체 예측치를 오염시키지 않도록 강제합니다.
 
 ### Phase 4: Operational Boundary Fine-Tuning
-> **Engineering Insight:** 마지막 단계는 비즈니스 로직 최적화입니다. 단순히 수치를 예측하는 것에 그치지 않고, 30 사이클(Failure)과 45 사이클(Alert) 경계면을 정밀하게 튜닝하여 실제 현장 정비 윈도우를 확보했습니다.
-
-* **Key Logic:** Business-driven Thresholding (Failure < 30, Alert < 45)
+* **Logic:** Business-driven Thresholding (Failure < 30, Alert < 45)
+* **Meaning:** 기술적 예측치를 실제 정비 현장의 의사결정 마진(30 사이클 미만 고장 정의)과 일치시키는 후처리를 수행했습니다.
 
 ---
 
 ## 📈 3. Experimental Results & Diagnostics
 
-### 3.1. Convergence Analysis
+### 3.1. Model Convergence (Training Loss & Confusion Matrix)
+> **Chart Explanation:** 학습 손실 곡선(Loss)은 모델이 데이터의 패턴을 얼마나 안정적으로 학습했는지를 보여줍니다. 오른쪽의 Confusion Matrix는 최종 테스트셋에서 '고장(Failure)'을 놓치지 않고(FN 0에 근접) 정확히 알람(Alert)을 발생시켰는지 검증합니다.
+
 | Model | FD002 Convergence | FD004 Convergence |
 | :--- | :---: | :---: |
 | **CNN-BiLSTM-Attention** | ![FD002 BiLSTM](./FD002/Visualization/CNN-BILSTM-ATT%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 BiLSTM](./FD004/Visualization/CNN-BILSTM-ATT%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) |
 | **Dual Transformer** | ![FD002 Transformer](./FD002/Visualization/DUAL%20TRANSFORMER%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Transformer](./FD004/Visualization/DUAL%20TRANSFORMER%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) |
 | **Geometric Ensemble** | ![FD002 Ensemble](./FD002/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Ensemble](./FD004/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test)%20.png) |
 
-### 3.2. Diagnostic Reliability
-> **Engineering Insight:** 잔차(Residuals) 분포와 Scatter Plot 분석을 통해 모델이 0 근방에서 얼마나 강건하게 유지되는지 검증한 결과입니다. 정답선(y=x)에 대한 밀집도는 모델의 최종 신뢰도를 의미합니다.
+### 3.2. Diagnostic Reliability (Residuals & Regression)
+> **Chart Explanation:** 잔차(Residual) 분포가 0을 중심으로 좁은 가우시안 밴드를 형성할수록 예측이 정확함을 의미합니다. Scatter Plot의 데이터 포인트들이 $y=x$ 선에 얼마나 조밀하게 밀착되어 있는지가 모델의 회귀 성능(RUL 정밀도)을 최종 증명합니다.
 
 | Diagnostic | FD002 Plot | FD004 Plot |
 | :--- | :---: | :---: |
@@ -62,14 +65,14 @@
 ---
 
 ## 🤖 4. Integration: Voiceflow Report Builder
-> **Concept Note:** 모델의 최종 진단 결과는 **Voiceflow(보이스플로우)** 인터페이스와 통합되어 운용됩니다. 실시간 정비 의사결정이 필요한 경우, 시스템이 생성한 진단 차트 이미지가 챗봇 대화창을 통해 즉각적으로 제공됩니다.
+> **Integration Note:** 본 파이프라인의 최종 진단 결과는 **Voiceflow(보이스플로우)** 챗봇 대화창과 연동됩니다. 모델이 생성한 실시간 정비 의사결정 차트 및 리포트는 이미지 형태로 즉각 시각화되어 현장 정비사에게 전달됩니다.
 
 ---
 
 ## 📂 Repository Structure
 ```text
 .
-├── FD002/Visualization/      # FD002 분석 결과 시각화 자산
-├── FD004/Visualization/      # FD004 분석 결과 시각화 자산
-├── src/                      # 주피터 노트북 로직 기반 코어 파이프라인
+├── FD002/Visualization/      # FD002 정밀 분석 결과
+├── FD004/Visualization/      # FD004 정밀 분석 결과
+├── src/                      # 파이프라인 코어 로직
 └── README.md
