@@ -89,14 +89,10 @@ This repository provides a framework for Remaining Useful Life (RUL) estimation 
 * **Interpretation Support:** Simplifies complex model indicators into a 'Maintenance Guide,' enabling intuitive decision-making for non-experts in the field.
 * **Continuous Feedback:** Uses field maintenance result data as a feedback loop to the model, laying the foundation for continuous tuning of False Positive rates.
 
-## Methodology & References
-
-The project utilizes the following architectures to process the **NASA C-MAPSS Data Repository**:
-
-| Model Approach | Focus Area |
-| :--- | :--- |
-| **CNN-BiLSTM-Attention** | SOH and RUL estimation |
-| **Dual-Scale Transformer** | Advanced RUL Prediction |
+## 📚 References
+* **Dataset:** [NASA C-MAPSS Data Repository](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
+* **CNN-BiLSTM-Attention:** [Attention-based CNN-BiLSTM for SOH and RUL estimation](https://doi.org/10.1177/17483026221130598)
+* **Transformer-based:** [A Dual-Scale Transformer-Based Remaining Useful Life Prediction Model](https://irep.ntu.ac.uk/id/eprint/51147/1/1877636_Mumtaz.pdf)
 
 ## Repository Structure
 
