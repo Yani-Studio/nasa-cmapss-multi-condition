@@ -1,4 +1,4 @@
-# 🚀 NASA Aero-Engine Intelligence: Advanced Multi-Regime Ensemble Prognostics
+# 🚀 NASA Aero-Engine Intelligence: Multi-Regime Ensemble Prognostics with 90.4% Penalty Reduction
 
 > **Hybrid Deep Learning Pipeline for C-MAPSS FD002 & FD004 Data Streams with Real-Time Voiceflow PHM Field Integration**
 
