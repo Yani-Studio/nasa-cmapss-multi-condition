@@ -1,10 +1,19 @@
 # 🚀 NASA Aero-Engine Intelligence: Advanced Multi-Regime Ensemble Prognostics
 
-> **Hybrid Deep Learning Pipeline for C-MAPSS FD002 & FD004 Data Streams**
+> **Hybrid Deep Learning Pipeline for C-MAPSS FD002 & FD004 Data Streams with Real-Time Voiceflow PHM Field Integration**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Hardware: Apple M5](https://img.shields.io/badge/Hardware-Apple_M5_24GB-black.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
+
+---
+
+## ⚙️ System Target: Gas Turbine Aero-Engine Architecture
+This project tracks the internal thermodynamic degradation patterns of gas turbine engines operating under highly volatile multi-regime conditions. The target system components (Fan, LPC, HPC, Combustor, HPT, LPT, Nozzle) and their corresponding 3D cross-sectional profiles utilized for prognostic validation are structured below:
+
+| 2D Component Guidelines & Sensor Locations (Schematic) | 3D Structural Cross-Sectional Framework |
+| :---: | :---: |
+| ![Gas Turbine 2D](./snake_case/gas_turbine_2d_schematic.png) | ![Gas Turbine 3D](./snake_case/gas_turbine_3d_cross_section.jpeg) |
 
 ---
 
@@ -14,11 +23,17 @@ All deep learning model training and time-series ensemble operations for this pi
 ---
 
 ## 📊 1. Performance Benchmark: NASA Penalty Score
+
 > **Metric Explanation:** This is the most critical metric for the NASA C-MAPSS dataset. Beyond simply reducing Mean Squared Error (MSE), our ensemble model dramatically improves penalty scores by mitigating 'Late Predictions' (identifying a failure as normal), which are heavily penalized. Our model physically suppresses these heavy-tail errors.
 
-| FD002 - Penalty Score (78.4% ↓) | FD004 - Penalty Score (89.2% ↓) |
-| :---: | :---: |
-| ![FD002](./FD002/Visualization/NASA%20Penalty%20Score%20Comparison%20(Lower%20is%20Better).png) | ![FD004](./FD004/Visualization/NASA%20Penalty%20Score%20Comparison%20(Lower%20is%20Better).png) |
+| Dataset Classification | Operational Complexity | Performance Improvement (NASA Penalty Score) |
+| :---: | :--- | :---: |
+| **FD002** | 6 Operating Regimes, 1 Fault Mode | **78.4% ↓** Penalty Reduction |
+| **FD004** | 6 Operating Regimes, 2 Fault Modes | **89.2% ↓** Penalty Reduction |
+
+### Penalty Score Visualization
+* **FD002 Evaluation:** ![FD002](./FD002/Visualization/NASA%20Penalty%20Score%20Comparison%20(Lower%20is%20Better).png)
+* **FD004 Evaluation:** ![FD004](./FD004/Visualization/NASA%20Penalty%20Score%20Comparison%20(Lower%20is%20Better).png)
 
 ---
 
@@ -40,7 +55,7 @@ All deep learning model training and time-series ensemble operations for this pi
     * **FD004:** We utilize the Soft-Min function to assign higher weights to lower predicted RUL values (i.e., identifying earlier failure warnings), effectively prioritizing critical risk detection in complex, noisy environments.
 
 ### Phase 4: Operational Boundary Fine-Tuning
-* **Logic:** Business-driven Thresholding (Failure < 30, Alert < 45)
+* **Logic:** Business-driven Thresholding (Failure < 30, Alert < 35)
 * **Meaning:** We performed post-processing to align technical predictions with real-world maintenance decision margins (defining failure as < 30 cycles).
 
 ---
@@ -50,8 +65,8 @@ All deep learning model training and time-series ensemble operations for this pi
 ### 3.1. Model Convergence (Training Loss & Confusion Matrix)
 > **Chart Explanation:** The Training Loss curve demonstrates the stability of the model's pattern learning. The confusion matrix on the right verifies that our final test set captures 'Failures' without error (FN nearing 0) and triggers 'Alerts' precisely.
 
-| Model | FD002 Convergence | FD004 Convergence |
-| :--- | :--- | :--- |
+| Model Architecture | FD002 Convergence & Confusion Matrix | FD004 Convergence & Confusion Matrix |
+| :--- | :---: | :---: |
 | **CNN-BiLSTM-Attention** | ![FD002 BiLSTM](./FD002/Visualization/CNN-BILSTM-ATT%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 BiLSTM](./FD004/Visualization/CNN-BILSTM-ATT%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) |
 | **Dual Transformer** | ![FD002 Transformer](./FD002/Visualization/DUAL%20TRANSFORMER%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Transformer](./FD004/Visualization/DUAL%20TRANSFORMER%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) |
 | **Ensemble (Geo/Soft-Min)** | ![FD002 Ensemble](./FD002/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test).png) | ![FD004 Ensemble](./FD004/Visualization/GEOMETRIC%20ENSEMBLE%20FINE-TUNING%20-%20Training%20Loss%20,%20Confusion%20Matrix%20(Real%20Test)%20.png) |
@@ -59,36 +74,56 @@ All deep learning model training and time-series ensemble operations for this pi
 ### 3.2. Diagnostic Reliability (Residuals & Regression)
 > **Chart Explanation:** Residual distribution forming a tight Gaussian band around 0 indicates high prediction accuracy. The closer the data points in the scatter plot are to the $y=x$ line, the stronger the regression performance (RUL precision) of the model.
 
-| Diagnostic | FD002 Plot | FD004 Plot |
-| :--- | :--- | :--- |
+| Diagnostic Metric | FD002 Plot Analysis | FD004 Plot Analysis |
+| :--- | :---: | :---: |
 | **Residuals Distribution** | ![FD002 Res](./FD002/Visualization/Residuals%20(Error)%20Distribution%20Comparison.png) | ![FD004 Res](./FD004/Visualization/Residuals%20(Error)%20Distribution%20Comparison.png) |
-| **Prediction Trend** | ![FD002 Trend](./FD002/Visualization/RUL%20Prediction%20Trend%20(Sorted%20by%20True%20RUL).png) | ![FD004 Trend](./FD004/Visualization/RUL%20Prediction%20Trend%20(Sorted%20by%20True%20RUL).png) |
-| **Scatter Analysis** | ![FD002 Scatter](./FD002/Visualization/True%20RUL%20vs%20Predicted%20RUL%20Scatter%20Plot.png) | ![FD004 Scatter](./FD004/Visualization/True%20RUL%20vs%20Predicted%20RUL%20Scatter%20Plot.png) |
+| **Prediction Trend (Sorted)** | ![FD002 Trend](./FD002/Visualization/RUL%20Prediction%20Trend%20(Sorted%20by%20True%20RUL).png) | ![FD004 Trend](./FD004/Visualization/RUL%20Prediction%20Trend%20(Sorted%20by%20True%20RUL).png) |
+| **Scatter Analysis (True vs Pred)** | ![FD002 Scatter](./FD002/Visualization/True%20RUL%20vs%20Predicted%20RUL%20Scatter%20Plot.png) | ![FD004 Scatter](./FD004/Visualization/True%20RUL%20vs%20Predicted%20RUL%20Scatter%20Plot.png) |
 
-## 🤖 4. Integration: Voiceflow Report Builder
+---
 
-> **Concept:** This system connects the prediction engine (MacBook M5) to the field interface (Voiceflow chatbot) via API, transforming the complex inferences of the deep learning model into an immediate **Maintenance Decision Report**.
+## 🤖 4. Integration: Voiceflow PHM Report Builder
 
-### 4.1. Data-to-Insight Workflow
-This pipeline enables technicians to take immediate action without separate data interpretation by following this automated workflow:
+Advanced RUL inference outputs generated from our M5-backed pipeline are integrated directly via API with the **Voiceflow Intelligent PHM Agent Interface**. This empowers field technicians to query and intercept real-time fleet health statuses instantly.
 
-1.  **Inference Execution:** The `CombinedModel` receives engine sensor data and infers RUL (Remaining Useful Life) and failure probability in real-time.
-2.  **Automated Visualization:** The visualization engine automatically renders the inference results (regression results and residual distribution charts) and saves them as image files with unique IDs.
-3.  **Webhook Trigger:** A JSON payload containing the image path and Maintenance Action Plan is sent to the Voiceflow API.
-4.  **Field Delivery:** Field technicians instantly check the charts on their mobile chatbot interface and decide whether to perform immediate maintenance.
+### 4.1. Knowledge Base & Vector Core Structure
+To manage massive engine lifecycle metrics and physics-of-failure documents for real-time RAG (Retrieval-Augmented Generation), we decoupled the agent's knowledge base into two primary data streams:
 
-### 4.2. Delivery Payload Structure
-For efficient inter-system communication, we use the following JSON payload structure:
+* `chatbot_analysis_report_2.txt`: Structured text report containing operational history, variables, and model inference outputs for the fleet.
+* `Damage Propagation Modeling.pdf`: Detailed failure physics manual detailing crack propagation modeling and thermodynamic lifespan degradation formulas.
 
-# Predictive Maintenance & RUL Estimation System
+![Voiceflow Knowledge Base](./snake_case/voiceflow_knowledge_base.png)
 
-This repository provides a framework for Remaining Useful Life (RUL) estimation and State of Health (SOH) monitoring, leveraging deep learning models on the NASA C-MAPSS dataset.
+### 4.2. Agent Prompt Architecture & Gatekeeper Logic
+To prevent hallucinations and conversational drift, we enforce a strict, mutually exclusive 3-stage state machine (`Mutually Exclusive Mode Selection`) along with tight output constraints inside the global instructions layer:
 
-## 4.3. Strategic Impact
+![Voiceflow Instructions](./snake_case/voiceflow_instructions.png)
 
-* **Latency Reduction:** Reduces the time from data analysis to maintenance recommendation to a matter of minutes.
-* **Interpretation Support:** Simplifies complex model indicators into a 'Maintenance Guide,' enabling intuitive decision-making for non-experts in the field.
-* **Continuous Feedback:** Uses field maintenance result data as a feedback loop to the model, laying the foundation for continuous tuning of False Positive rates.
+* **MODE 1: Initial Greeting / Session Startup**
+    * Restricts the initial output rigidly to the designated system message: `"Engine diagnostic bot here. What can I diagnose for you?"` Absolute prohibition of raw JSON or arbitrary greetings.
+* **MODE 2: Casual Small Talk & Acknowledgments**
+    * Intercepts out-of-domain requests (e.g., weather inquiries) and routes them back politely but firmly to turbine health diagnostics.
+* **MODE 3: Explicit Data-Driven Engine Diagnosis**
+    * Triggered exclusively when a valid `Engine_ID` is parsed. It fetches matching vector embeddings and structural constraints to synthesize a single, clean JSON block (`Single JSON Synthesis Constraint`).
+* **Domain Criteria Decision Rules:**
+    * **Failure Condition:** If $\text{Actual\_RUL} < 30 \text{ cycles}$, map to `Actual_Status: Failure`.
+    * **Alert Condition:** If $\text{Predicted\_RUL} < 35 \text{ cycles}$, map to `Predicted_Status: Alert`.
+
+### 4.3. Live Chat Execution Log & Diagnostics Result
+Below is the execution stream captured during live multi-turn field diagnostic testing, demonstrating successful state transitions and RAG evaluations:
+
+![Voiceflow Execution](./snake_case/voiceflow_chat_execution.png)
+
+#### 📝 Live Test Scenario & Diagnostic Result Summary Table
+
+| Evaluation Target | User Input Context | System Inference Status & Action Plan (JSON Parse Result) |
+| :--- | :--- | :--- |
+| **Domain Out Check** | "What is the temperature tonight?" | Mode 2 Triggered. Rejects weather scope gracefully and re-pivots to turbine health support. |
+| **Engine 203** | "Please analyze the current health status and operational margin of Engine 203." | `Current_Cycle: 192`, `Actual_RUL: 112`, `Predicted_RUL: 106.7`<br>Both metrics sit safely above decision boundaries. System maps status as **Normal** and recommends continuous monitoring. |
+| **Engine 32** | "Please provide a professional diagnostic evaluation based on the current cycle of Engine 32." | `Current_Cycle: 170`, `Actual_RUL: 130`, `Predicted_RUL: 125.6`<br>The delta between actual and predicted metrics is a tight 4.4 cycles, verifying excellent model fidelity. Status remains **Normal**. |
+| **Engine 58** | "Please evaluate the degradation risk and Health Index of Engine 58 at the 245-cycle mark." | `Current_Cycle: 247`, `Actual_RUL: 26`, `Predicted_RUL: 22.3`<br>**Critical Risk Detected:** Metrics drop below the 30-cycle failure threshold. The system registers a True Positive (TP) fault detection and flags an immediate **"Failure"** status, ordering an immediate maintenance intervention. |
+
+---
 
 ## 📚 References
 * **Dataset:** [NASA C-MAPSS Data Repository](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
@@ -96,11 +131,11 @@ This repository provides a framework for Remaining Useful Life (RUL) estimation 
 * **Transformer-based:** [A Dual-Scale Transformer-Based Remaining Useful Life Prediction Model](https://irep.ntu.ac.uk/id/eprint/51147/1/1877636_Mumtaz.pdf)
 
 ## Repository Structure
-
 ```text
 .
 ├── FD002/Visualization/ # FD002 Detailed analysis results
 ├── FD004/Visualization/ # FD004 Detailed analysis results
+├── snake_case/          # Voiceflow Interface & Gas Turbine Components Layout Figures
 ├── src/                 # Pipeline core logic
 └── README.md            # Project documentation
 
