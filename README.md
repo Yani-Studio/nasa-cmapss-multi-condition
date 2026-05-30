@@ -97,7 +97,7 @@ To manage massive engine lifecycle metrics and physics-of-failure documents for 
 ### 4.2. Agent Prompt Architecture & Gatekeeper Logic
 To prevent hallucinations and conversational drift, we enforce a strict, mutually exclusive 3-stage state machine (`Mutually Exclusive Mode Selection`) along with tight output constraints inside the global instructions layer:
 
-![Voiceflow Instructions](./snake_case/voiceflow_instructions.png)
+![Voiceflow Agent Instructions](./snake_case/voiceflow_agent_instructions.png)
 
 * **MODE 1: Initial Greeting / Session Startup**
     * Restricts the initial output rigidly to the designated system message: `"Engine diagnostic bot here. What can I diagnose for you?"` Absolute prohibition of raw JSON or arbitrary greetings.
@@ -106,8 +106,8 @@ To prevent hallucinations and conversational drift, we enforce a strict, mutuall
 * **MODE 3: Explicit Data-Driven Engine Diagnosis**
     * Triggered exclusively when a valid `Engine_ID` is parsed. It fetches matching vector embeddings and structural constraints to synthesize a single, clean JSON block (`Single JSON Synthesis Constraint`).
 * **Domain Criteria Decision Rules:**
-    * **Failure Condition:** If $\text{Actual\_RUL} < 30 \text{ cycles}$, map to `Actual_Status: Failure`.
-    * **Alert Condition:** If $\text{Predicted\_RUL} < 35 \text{ cycles}$, map to `Predicted_Status: Alert`.
+    * **Failure Condition:** If `Actual_RUL` < 30 cycles, map to `Actual_Status: Failure`.
+    * **Alert Condition:** If `Predicted_RUL` < 35 cycles, map to `Predicted_Status: Alert`.
 
 ### 4.3. Live Chat Execution Log & Diagnostics Result
 Below is the execution stream captured during live multi-turn field diagnostic testing, demonstrating successful state transitions and RAG evaluations:
@@ -138,4 +138,3 @@ Below is the execution stream captured during live multi-turn field diagnostic t
 ├── snake_case/          # Voiceflow Interface & Gas Turbine Components Layout Figures
 ├── src/                 # Pipeline core logic
 └── README.md            # Project documentation
-
