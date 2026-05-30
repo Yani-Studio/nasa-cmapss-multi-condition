@@ -28,8 +28,8 @@ All deep learning model training and time-series ensemble operations for this pi
 
 | Dataset Classification | Operational Complexity | Performance Improvement (NASA Penalty Score) |
 | :---: | :--- | :---: |
-| **FD002** | 6 Operating Regimes, 1 Fault Mode | **78.4% ↓** Penalty Reduction |
-| **FD004** | 6 Operating Regimes, 2 Fault Modes | **89.2% ↓** Penalty Reduction |
+| **FD002** | 6 Operating Regimes, 1 Fault Mode | **42.3% ↓** Penalty Reduction (vs. CNN-BiLSTM-Att) |
+| **FD004** | 6 Operating Regimes, 2 Fault Modes | **90.4% ↓** Penalty Reduction (vs. CNN-BiLSTM-Att) |
 
 ### Penalty Score Visualization
 * **FD002 Evaluation:** ![FD002](./FD002/Visualization/NASA%20Penalty%20Score%20Comparison%20(Lower%20is%20Better).png)
